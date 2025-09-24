@@ -31,12 +31,10 @@ async def filter_dom_redirect(page, final_url: str) -> bool:
         html = await page.content()
         soup = BeautifulSoup(html, "html.parser")
 
-        # Проверка whitelist
         if is_whitelisted(final_url):
             if soup.find("iframe", src=True) or soup.find("embed", src=True):
                 return False
 
-        # Обработка <script>
         scripts = soup.find_all("script")
         for script in scripts:
             raw_code = script.get_text()
@@ -49,7 +47,6 @@ async def filter_dom_redirect(page, final_url: str) -> bool:
                 except Exception as js_err:
                     print(f"[JSBEAUTIFIER ERROR] {final_url} → {js_err}")
 
-        # Обработка inline JS (onclick, onload и т.д.)
         for tag in soup.find_all(True):
             for attr in tag.attrs:
                 if attr.startswith("on"):
@@ -58,7 +55,6 @@ async def filter_dom_redirect(page, final_url: str) -> bool:
                         print(f"[INLINE JS REDIRECT] {final_url} → {js_code[:100]}...")
                         return True
 
-        # Проверка через INIT_HOOK
         try:
             nav_hits = await page.evaluate("window.__nav_hits || []")
             for hit in nav_hits:
