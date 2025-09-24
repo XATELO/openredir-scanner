@@ -86,9 +86,6 @@ deactivate
 ```
 ### Command-line Options
 
-All available flags for `openredir.py`:
-usage: openredir.py [-h] (-u URL | -L LIST) [--dest DEST] [-t TIMEOUT] [-T THREADS] [--ua UA] [--dom-workers DOM_WORKERS] [--max-pages MAX_PAGES]
-
 ReddeZeress - Open Redirect Scanner
 options:
 -h, --help show this help message and exit
