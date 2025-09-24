@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="logo.png" alt="ReddeZeress Logo" width="150"/>
+  <img src="logo.png" alt="ReddeZeress Logo" width="450"/>
 </p>
 
 # ReddeZeress - Advanced Open Redirect Scanner
@@ -85,10 +85,10 @@ When you are finished, you can exit the virtual environment by simply running:
 deactivate
 ```
 
-###License
+### License
 This project is licensed under the MIT License - see the LICENSE file for details.
 
-###⚠️Disclaimer
+### ⚠️Disclaimer
 This tool is intended for educational and authorized penetration testing purposes only. The author is not responsible for any misuse or damage caused by this script.
 python openredir.py -u https://target.com
 
