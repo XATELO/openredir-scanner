@@ -84,13 +84,41 @@ When you are finished, you can exit the virtual environment by simply running:
 ```bash
 deactivate
 ```
+### Command-line Options
+
+All available flags for `openredir.py`:
+usage: openredir.py [-h] (-u URL | -L LIST) [--dest DEST] [-t TIMEOUT] [-T THREADS] [--ua UA] [--dom-workers DOM_WORKERS] [--max-pages MAX_PAGES]
+
+ReddeZeress - Open Redirect Scanner
+options:
+-h, --help show this help message and exit
+
+Target Specification:
+-u URL, --url URL Single URL to scan.
+-L LIST, --list LIST File containing a list of URLs to scan.
+
+Scan Configuration:
+--dest DEST Custom destination URL for redirect payloads (default: https://example.com).
+-t TIMEOUT, --timeout TIMEOUT
+HTTP request timeout in seconds (default: 5.0).
+-T THREADS, --threads THREADS
+Number of threads for static scanning (default: 50).
+--ua UA Custom User-Agent string (default: ReddeZeress (+security-testing)).
+
+DOM Scanning:
+--dom-workers DOM_WORKERS
+Number of parallel browser workers for DOM scanning (default: 12).
+
+Crawling:
+--max-pages MAX_PAGES
+Maximum number of pages to crawl per base URL (default: 25).
+
 
 ### License
 This project is licensed under the MIT License - see the LICENSE file for details.
 
 ### ⚠️Disclaimer
 This tool is intended for educational and authorized penetration testing purposes only. The author is not responsible for any misuse or damage caused by this script.
-python openredir.py -u https://target.com
 
 ### ❤️ Support the Project
 This project is developed and maintained in my free time. If you find ReddeZeress useful and want to support its future development, please consider a donation.
