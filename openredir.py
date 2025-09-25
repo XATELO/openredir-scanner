@@ -32,7 +32,7 @@ BANNER = f"""{C}
 {M}                  by DevSecOpter
 {W}"""
 
-DEFAULT_UA = "ReddeZeress (+security-testing)"
+DEFAULT_UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36"
 REDIR_PARAMS = {
     "next", "url", "target", "dest", "destination", "redir", "redirect", "redirect_url",
     "redirect_to", "redirect_uri", "out", "link", "to", "r", "u", "go", "return", "returnTo",
@@ -100,12 +100,24 @@ def fetch_static(client, url):
         return (None, None, "")
 
 def extract_paths_and_params(base_url, ua, timeout, max_pages=25):
+    browser_headers = {
+        "User-Agent": ua,
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+        "Accept-Language": "en-US,en;q=0.5",
+        "Accept-Encoding": "gzip, deflate, br",
+        "Connection": "keep-alive",
+        "Upgrade-Insecure-Requests": "1",
+        "Sec-Fetch-Dest": "document",
+        "Sec-Fetch-Mode": "navigate",
+        "Sec-Fetch-Site": "none",
+        "Sec-Fetch-User": "?1",
+    }
     seen = set()
     paths = set()
     params = set()
     q = [base_url]
     transport = httpx.HTTPTransport(retries=2)
-    client = httpx.Client(http2=True, transport=transport, timeout=timeout, headers={"User-Agent": ua})
+    client = httpx.Client(http2=True, transport=transport, timeout=timeout, headers=browser_headers)
     while q and len(seen) < max_pages:
         u = q.pop(0)
         if u in seen:
@@ -173,8 +185,22 @@ async def dom_worker(pw, queue, ua, findings, pbar):
             "--disable-software-rasterizer", "--mute-audio"
         ]
     )
-    ctx = await browser.new_context(user_agent=ua)
-    page = await ctx.new_page()  
+    browser_headers = {
+        "User-Agent": ua,
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+        "Accept-Language": "en-US,en;q=0.5",
+        "Upgrade-Insecure-Requests": "1",
+        "Sec-Fetch-Dest": "document",
+        "Sec-Fetch-Mode": "navigate",
+        "Sec-Fetch-Site": "none",
+        "Sec-Fetch-User": "?1",
+    }
+    ctx = await browser.new_context(
+        user_agent=ua,
+        extra_http_headers=browser_headers
+    )
+    page = await ctx.new_page() 
+    await page.add_init_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})") 
 
     try:
         while True:
@@ -360,9 +386,21 @@ async def main():
 
     findings = []
     dom_candidates = []
+    browser_headers = {
+        "User-Agent": args.ua,
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+        "Accept-Language": "en-US,en;q=0.5",
+        "Accept-Encoding": "gzip, deflate, br",
+        "Connection": "keep-alive",
+        "Upgrade-Insecure-Requests": "1",
+        "Sec-Fetch-Dest": "document",
+        "Sec-Fetch-Mode": "navigate",
+        "Sec-Fetch-Site": "none",
+        "Sec-Fetch-User": "?1",
+    }
 
     transport = httpx.HTTPTransport(retries=2)
-    client = httpx.Client(http2=True, transport=transport, timeout=args.timeout, headers={"User-Agent": args.ua})
+    client = httpx.Client(http2=True, transport=transport, timeout=args.timeout, headers=browser_headers)
 
     with ThreadPoolExecutor(max_workers=args.threads) as ex:
         futures = {ex.submit(fetch_static, client, u): u for u in targets}
