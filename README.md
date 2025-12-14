@@ -42,18 +42,21 @@ ReddeZeress requires Python 3.8+.
 Perfect for quick checks. The tool will fuzz parameters automatically.
 ```bash
 python openredir.py -u https://example.com
+```
 
 
 ### Bulk Scan
 Scan a list of URLs from a file.
 ```bash
 python openredir.py -l targets.txt -t 20
+```
 
 
 ### Verbose Mode (Debug)
 Use -v to see all 3xx redirects (even safe ones) and connection errors. Useful for debugging WAFs.
 ```bash
 python openredir.py -u https://example.com -v
+```
 
 
 
